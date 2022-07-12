@@ -57,6 +57,9 @@ public class Snap extends CardGame {
                 if(cardOne.getValue() == cardTwo.getValue() && userString.contains("snap") && System.currentTimeMillis() < end) {
                     setHasSnap(true);
                 }
+        } else {
+            printMessage("Deck Finished");
+            handleEndGame();
         }
     }
     private void handleTurnResult(User firstUser, User secondUser, String WinnerMessage, int userNumber) {
