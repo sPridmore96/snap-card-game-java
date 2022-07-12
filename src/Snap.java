@@ -54,7 +54,7 @@ public class Snap extends CardGame {
             setCardOne(DeckOfCards.dealCard());
             setCardTwo(DeckOfCards.dealCard());
                 String userString = scanner.nextLine();
-                if(cardOne.getSymbol() == cardTwo.getSymbol() && userString.contains("snap") && System.currentTimeMillis() < end) {
+                if(cardOne.getValue() == cardTwo.getValue() && userString.contains("snap") && System.currentTimeMillis() < end) {
                     setHasSnap(true);
                 }
         }
