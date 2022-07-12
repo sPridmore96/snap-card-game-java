@@ -1,23 +1,25 @@
-import java.awt.*;
-import java.util.ArrayList;
-
 public class Snap extends CardGame {
     protected Snap() {
         super("Snap");
     }
+
     private boolean hasSnap = false;
     private Card cardOne;
     private Card cardTwo;
     private boolean isGameActive = true;
+
     private void setHasSnap(boolean hasSnap) {
         this.hasSnap = hasSnap;
     }
+
     private void setCardOne(Card cardOne) {
         this.cardOne = cardOne;
     }
+
     private void setCardTwo(Card cardTwo) {
         this.cardTwo = cardTwo;
     }
+
     private void setGameActive(boolean gameActive) {
         isGameActive = gameActive;
     }
@@ -25,29 +27,39 @@ public class Snap extends CardGame {
     private boolean isGameActive() {
         return isGameActive;
     }
-    User userOne = new User("PLAYER 1");
-    User userTwo = new User("PLAYER 2");
+
+    User userOne = new User("Sam");
+    User userTwo = new User("Emily");
 
     private void welcomeAndShuffle() {
         printGreetings("Snap");
-        DeckOfCards.setDeck(DeckOfCards.shuffleDeck((ArrayList) DeckOfCards.getDeck()));
+        DeckOfCards.shuffleTheDeck();
     }
-    private boolean handleTurn() {
+    private void runSnapGame() {
+        while (isGameActive) {
+            if (!userOne.getHasPlayed()) {
+                handleTurn();
+                handleTurnResult(userOne, userTwo, "User 1 Wins!", 2);
+            } else {
+                handleTurn();
+                handleTurnResult(userTwo, userOne, "User 2 Wins!", 1);
+
+            }
+        }
+    }
+    private void handleTurn() {
+        long start = System.currentTimeMillis();
+        long end = start + 3 * 1000;
         if (!(DeckOfCards.getDeck().size() == 0)) {
             setCardOne(DeckOfCards.dealCard());
             setCardTwo(DeckOfCards.dealCard());
-            if (cardOne.getSymbol() == cardTwo.getSymbol()) {
-                setHasSnap(true);
-            }
-            return hasSnap;
-        } else {
-            printMessage("The deck has finished. It has now been Re-Shuffled");
-            DeckOfCards.setDeck(DeckOfCards.shuffleDeck((ArrayList) DeckOfCards.getUsedDeck()));
-            runSnapGame();
+                String userString = scanner.nextLine();
+                if(cardOne.getSymbol() == cardTwo.getSymbol() && userString.contains("snap") && System.currentTimeMillis() < end) {
+                    setHasSnap(true);
+                }
         }
-        return hasSnap;
     }
-    private void handleSnap(User firstUser, User secondUser, String WinnerMessage, int userNumber) {
+    private void handleTurnResult(User firstUser, User secondUser, String WinnerMessage, int userNumber) {
         secondUser.setHasPlayed(false);
         if (!hasSnap) {
             printMessage("\n\nUser " + userNumber + "...");
@@ -60,23 +72,10 @@ public class Snap extends CardGame {
             } else {
                 firstUser.setScore(firstUser.getScore() + 1);
             }
-            printMessage("\n" + userOne.getName() + " Score: " + userOne.getScore() + "\n" + userTwo.getName() + " Score: " + userTwo.getScore());
+            printMessage("\n" + userOne.getName() + "'s Score: " + userOne.getScore() + "\n" + userTwo.getName() + "'s Score: " + userTwo.getScore());
             handleEndGame();
         }
         firstUser.setHasPlayed(true);
-    }
-    private void runSnapGame() {
-        while (isGameActive) {
-            getStringInput();
-            if (!userOne.getHasPlayed()) {
-                handleTurn();
-                handleSnap(userOne, userTwo, "User 1 Wins!", 2);
-            } else {
-                handleTurn();
-                handleSnap(userTwo, userOne, "User 2 Wins!", 1);
-
-            }
-        }
     }
     private void handleEndGame() {
         boolean isIntActive = true;
@@ -87,14 +86,16 @@ public class Snap extends CardGame {
                 DeckOfCards.handleDeckRemake();
                 setHasSnap(false);
                 runSnapGame();
-            } else {
-                isIntActive = false;
-                setGameActive(false);
-            }
             scanner.nextInt();
+            } else if(userScanner == 2) {
+                isIntActive = false;
+                isGameActive = false;
+                break;
+            }
         }
 
     }
+
     @Override
     public void run() {
         welcomeAndShuffle();
